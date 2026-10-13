@@ -1,6 +1,8 @@
 package model;
 import model.enums.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RentalContract {
 
@@ -15,6 +17,8 @@ public class RentalContract {
 
     private LocalDateTime checkInTime;
     private LocalDateTime checkOutTime;
+
+    private List<utility> utilitiesUsed;
 
     private double overStayFeePerDay;
 
@@ -40,6 +44,7 @@ public class RentalContract {
         this.endTime = endTime;
         this.overStayFeePerDay = calOverStayFeePerDay();
         this.status = contractStatus.onGoing;
+        this.utilitiesUsed = new ArrayList<>();
     }
 
     // To string
@@ -51,6 +56,8 @@ public class RentalContract {
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", overStayFeePerDay=" + overStayFeePerDay +
+                ", status=" + status +
+                ", utilitiesUsed=" + utilitiesUsed +
                 '}';
     }
 
@@ -103,4 +110,11 @@ public class RentalContract {
         this.status = contractStatus.completed;
     }
 
+    public void addUtility(utility utility){
+        this.utilitiesUsed.add(utility);
+    }
+
+    public List<utility> getUtilitiesUsed() {
+        return utilitiesUsed;
+    }
 }

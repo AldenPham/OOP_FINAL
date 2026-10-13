@@ -2,10 +2,7 @@ package model;
 import model.enums.*;
 
 
-public class Customer {
-    private String id;
-    private String name;
-    private String phoneNumber;
+public class Customer extends person {
     private String cccd;
     private int timeStayed = 0;
     private int moneySpended = 0;
@@ -18,30 +15,33 @@ public class Customer {
                     String cccd,
                     customerType type
     ){
-        this.id = id;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
+        super(id, name, phoneNumber);
         this.cccd = cccd;
         this.type = type;
     }
 
     public String get_id(){
-        return id;
+        return getId();
     }
 
     public String getCustomerName(){
-        return name;
+        return getName();
     }   
 
     public String toString() {
         return "Customer{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
+                "id='" + getId() + '\'' +
+                ", name='" + getName() + '\'' +
+                ", phoneNumber='" + getPhoneNumber() + '\'' +
                 ", cccd='" + cccd + '\'' +
                 ", timeStayed=" + timeStayed +
                 ", moneySpended=" + moneySpended +
                 ", type=" + type +
                 '}';
+    }
+
+    @Override 
+    public String getRole() {
+        return "Customer";
     }
 }

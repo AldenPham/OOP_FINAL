@@ -60,4 +60,8 @@ public class Room {
                 '}';
     }
 
+    public roomGroup getInGroup() {
+        return inGroup;
+    }
+
 }

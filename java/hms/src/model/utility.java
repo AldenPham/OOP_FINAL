@@ -1,14 +1,19 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class utility {
     String utilityName;
     String utilityId;
     double utilityPrice;
+    List<roomGroup> roomGroups; // Free for these group
 
     public utility(String utilityName, String utilityId, double utilityPrice) {
         this.utilityName = utilityName;
         this.utilityId = utilityId;
         this.utilityPrice = utilityPrice;
+        this.roomGroups = new ArrayList<>();    
     }
 
     public String getUtilityName() {
@@ -29,5 +34,9 @@ public class utility {
                 ", utilityId='" + utilityId + '\'' +
                 ", utilityPrice=" + utilityPrice +
                 '}';
+    }
+
+    public boolean isFreeForGroup(roomGroup group) {
+        return roomGroups.contains(group);
     }
 }

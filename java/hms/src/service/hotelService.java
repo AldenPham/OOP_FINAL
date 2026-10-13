@@ -177,6 +177,19 @@ public class hotelService {
         return true;
     }
     
+    // ===== Use Utility
+    public boolean useUtility(String contractId, utility utility){
+        RentalContract contract = findContractById(contractId);     
+
+        if(contract == null){
+            System.out.println("Contract not found");
+            return false;
+        }
+
+        contract.addUtility(utility);
+        return true;
+    }
+
     // ===== Check OUT
     public boolean checkOut(String contractId, LocalDateTime checkOutTime){
         RentalContract contract = findContractById(contractId);
@@ -245,8 +258,11 @@ public class hotelService {
     // ====== Calculate utility fee
     public double calculateUtilityFee(RentalContract contract){
         double total = 0.0;
-        for(utility u : contract.getRoom().getRoomGroup().getUtilities()){
-            total += u.getUtilityPrice();
+        roomGroup group =contract.getRoom().getInGroup();
+        for(utility u : contract.getUtilitiesUsed()){
+            if(!u.isFreeForGroup(group)){
+                total += u.getUtilityPrice();
+            }
         }
         return total;
     }
