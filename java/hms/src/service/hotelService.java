@@ -186,11 +186,22 @@ public class hotelService {
             return false;
         }
 
-        if(contract.getStatus() != contractStatus.completed){
-            System.out.println("Contract is already completed");
+        if (contract.getStatus() != contractStatus.onGoing) {
+            System.out.println("Contract is not ongoing");
             return false;
         }
-        
+
+        if (contract.getCheckInTime() == null ||
+            contract.getCheckOutTime() != null) {
+            System.out.println("Customer is not checked in");
+            return false;
+        }
+
+        if (utility == null) {
+            System.out.println("Utility cannot be null");
+            return false;
+        }
+
         contract.addUtility(utility);
         return true;
     }
