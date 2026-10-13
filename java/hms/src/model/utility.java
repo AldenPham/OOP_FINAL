@@ -39,4 +39,10 @@ public class utility {
     public boolean isFreeForGroup(roomGroup group) {
         return roomGroups.contains(group);
     }
+
+    public void addFreeGroup(roomGroup group) {
+        if (!roomGroups.contains(group)) {
+            roomGroups.add(group);
+        }
+    }
 }

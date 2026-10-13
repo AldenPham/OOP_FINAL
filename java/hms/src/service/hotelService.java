@@ -186,6 +186,11 @@ public class hotelService {
             return false;
         }
 
+        if(contract.getStatus() != contractStatus.completed){
+            System.out.println("Contract is already completed");
+            return false;
+        }
+        
         contract.addUtility(utility);
         return true;
     }

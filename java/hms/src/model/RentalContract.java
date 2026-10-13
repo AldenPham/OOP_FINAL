@@ -115,6 +115,6 @@ public class RentalContract {
     }
 
     public List<utility> getUtilitiesUsed() {
-        return utilitiesUsed;
+        return List.copyOf(utilitiesUsed);
     }
 }
