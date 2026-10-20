@@ -37,8 +37,8 @@
 * Ai chịu trách nhiệm //Room and Customer 
 ##### (6). Phiếu tính tiền
 * Phương thức tính tiền (CASH, CARD)
-* Cọc (tổng giá tiền phòng * 10% = cọc)
 * Người trả 
+* Cọc (tổng giá tiền phòng * 10% = cọc)
 * Trả cho hợp đồng nào
 ##### (7). Tiện ích
 * Mã tiện ích
