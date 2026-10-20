@@ -172,6 +172,7 @@ public class hotelService {
 
         // Set the check-in time for the contract
         contract.setCheckInTime(checkInTime);
+        contract.setRoomCapacityUsed(numberOfPeople);
 
         return true;
     }
@@ -252,7 +253,7 @@ public class hotelService {
 
         long days = contract.getCheckOutTime().toLocalDate().toEpochDay() - contract.getStartTime().toLocalDate().toEpochDay();
 
-        return (double) days * contract.getRoom().getRoomGroup().getFee().getRoomFeePerDay();
+        return (double) days * contract.getRoom().getRoomPrice();
     }
 
     // ====== Calculate overstay fee
