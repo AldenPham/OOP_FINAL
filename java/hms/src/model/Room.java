@@ -22,7 +22,6 @@ public class Room {
         this.roomCapacity = roomCapacity;
         this.inGroup = inGroup;
         this.status = status;
-        this.roomPrice = roomPrice;
     }
 
     public String getRoomId(){
@@ -64,4 +63,7 @@ public class Room {
         return inGroup;
     }
 
+    public int getRoomCapacity() {
+        return roomCapacity;
+    }
 }

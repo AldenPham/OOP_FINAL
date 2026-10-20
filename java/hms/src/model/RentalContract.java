@@ -19,15 +19,8 @@ public class RentalContract {
     private LocalDateTime checkOutTime;
 
     private List<utility> utilitiesUsed;
+    private int roomCapacityUsed = 0;
 
-    private double overStayFeePerDay;
-
-    private double calOverStayFeePerDay(){
-        double basePrice = room.getRoomPrice();
-        return basePrice * room.getRoomType().getOverstayMultiplier() * 10; // Example
-        //  calculation based on room type
-
-    }
 
     //Constructor
     public RentalContract(
@@ -42,7 +35,6 @@ public class RentalContract {
         this.room = room;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.overStayFeePerDay = calOverStayFeePerDay();
         this.status = contractStatus.onGoing;
         this.utilitiesUsed = new ArrayList<>();
     }
@@ -53,9 +45,9 @@ public class RentalContract {
                 "contractId='" + contractId + '\'' +
                 ", customer=" + customer +
                 ", room=" + room +
+                ", roomCapacityUsed=" + roomCapacityUsed +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
-                ", overStayFeePerDay=" + overStayFeePerDay +
                 ", status=" + status +
                 ", utilitiesUsed=" + utilitiesUsed +
                 '}';
@@ -94,9 +86,7 @@ public class RentalContract {
         return status;
     }
 
-    public double getOverStayFeePerDay() {
-        return overStayFeePerDay;
-    }
+
 
     public void setCheckInTime(LocalDateTime checkInTime) {
         this.checkInTime = checkInTime;
@@ -116,5 +106,13 @@ public class RentalContract {
 
     public List<utility> getUtilitiesUsed() {
         return List.copyOf(utilitiesUsed);
+    }
+
+    public int getRoomCapacityUsed() {
+        return roomCapacityUsed;
+    }
+
+    public void amountOfPeopleCheckIn(int numerOfPeople){
+        this.roomCapacityUsed = numerOfPeople;
     }
 }

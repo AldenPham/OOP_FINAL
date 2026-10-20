@@ -67,7 +67,6 @@ public class hotelService {
         return null;
     }
 
-
     // ===== ADD ROOM
     public boolean addRoom(Room room){
         rooms.add(room);
@@ -142,7 +141,7 @@ public class hotelService {
 
 
     // ===== Check IN
-    public boolean checkIn(String contractId, LocalDateTime checkInTime){
+    public boolean checkIn(String contractId, LocalDateTime checkInTime, int numberOfPeople){
         RentalContract contract = findContractById(contractId);
 
         if (contract == null) {
@@ -253,7 +252,7 @@ public class hotelService {
 
         long days = contract.getCheckOutTime().toLocalDate().toEpochDay() - contract.getStartTime().toLocalDate().toEpochDay();
 
-        return (double) days * contract.getRoom().getRoomPrice();
+        return (double) days * contract.getRoom().getRoomGroup().getFee().getRoomFeePerDay();
     }
 
     // ====== Calculate overstay fee
@@ -268,7 +267,7 @@ public class hotelService {
                 - contract.getEndTime().toLocalDate().toEpochDay()
         );
 
-        return contract.getOverStayFeePerDay() * days;
+        return contract.getRoom().getRoomGroup().getFee().getOverStayFeePerDay() * days;
     }
 
     // ====== Calculate utility fee
@@ -281,6 +280,25 @@ public class hotelService {
             }
         }
         return total;
+    }
+
+    // ====== Calculate over max capacity
+    public double calculateOverMaxCapacityFee(RentalContract contract){
+        if (contract.getCheckOutTime() == null) {
+            return 0;
+        }
+
+        int maxCapacity = contract.getRoom().getRoomCapacity();
+        int capacityUsed = contract.getRoomCapacityUsed();
+
+        if (capacityUsed <= maxCapacity) {
+            return 0;
+        }
+
+        int overCapacity = capacityUsed - maxCapacity;
+        double overCapacityFeePerPerson = contract.getRoom().getRoomGroup().getFee().getOverMaxCapacityFee(); 
+
+        return overCapacity * overCapacityFeePerPerson;
     }
 
     // ===== CREATE INVOICE
@@ -307,10 +325,11 @@ public class hotelService {
         double roomFee = calculateRoomFee(contract);
         double overstayFee = calculateOverstayFee(contract);
         double utilityFee = calculateUtilityFee(contract);
+        double overMaxCapacityFee = calculateOverMaxCapacityFee(contract);
 
         double deposit = roomFee * 0.10;
 
-        double total = roomFee + overstayFee + utilityFee - deposit;
+        double total = roomFee + overstayFee + utilityFee + overMaxCapacityFee - deposit;
 
         Invoice invoice = new Invoice(
             "I" + (invoiceCounter++),
@@ -320,6 +339,7 @@ public class hotelService {
             roomFee,
             overstayFee,
             utilityFee,
+            overMaxCapacityFee,
             deposit,
             total
         );
@@ -328,6 +348,7 @@ public class hotelService {
 
         System.out.println(invoice.toString());
     }
+
 }
 
 

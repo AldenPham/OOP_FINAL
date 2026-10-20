@@ -17,6 +17,7 @@ public class Invoice {
     private double roomFee;
     private double overstayFee;
     private double utilityFee;
+    private double overMaxCapacityFee;
 
     private double deposit;
     private double total;
@@ -28,6 +29,7 @@ public class Invoice {
                    paymentType paymentType,
                    double roomFee,
                    double overstayFee,
+                   double overMaxCapacityFee,
                    double utilityFee,
                    double deposit,
                    double total
@@ -38,11 +40,15 @@ public class Invoice {
         this.paymentType = paymentType;
         this.roomFee = roomFee;
         this.overstayFee = overstayFee;
+        this.overMaxCapacityFee = overMaxCapacityFee;
         this.utilityFee = utilityFee;
         this.deposit = deposit;
         this.total = total;
     }
 
+    public paymentType getPaymentType() {
+        return paymentType;
+    }
 
     public RentalContract getContract() {
         return contract;
@@ -57,6 +63,7 @@ public class Invoice {
                 ", roomFee=" + roomFee +
                 ", overstayFee=" + overstayFee +
                 ", utilityFee=" + utilityFee +
+                ", overMaxCapacityFee=" + overMaxCapacityFee +
                 ", deposit=" + deposit +
                 ", total=" + total +
                 '}';
