@@ -112,7 +112,7 @@ public class RentalContract {
         return roomCapacityUsed;
     }
 
-    public void amountOfPeopleCheckIn(int numerOfPeople){
-        this.roomCapacityUsed = numerOfPeople;
+    public void setRoomCapacityUsed(int numberOfPeople){
+        this.roomCapacityUsed = numberOfPeople;
     }
 }

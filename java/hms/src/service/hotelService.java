@@ -170,6 +170,10 @@ public class hotelService {
             return false;
         }  
 
+        if(numberOfPeople <= 0){
+            System.out.println("Number of people must be greater than 0");
+            return false;
+        }
         // Set the check-in time for the contract
         contract.setCheckInTime(checkInTime);
         contract.setRoomCapacityUsed(numberOfPeople);
@@ -268,7 +272,7 @@ public class hotelService {
                 - contract.getEndTime().toLocalDate().toEpochDay()
         );
 
-        return contract.getRoom().getRoomGroup().getFee().getOverStayFeePerDay() * days;
+        return contract.getRoom().getRoomGroup().getFee().overStayFeePerDay() * days;
     }
 
     // ====== Calculate utility fee
@@ -297,7 +301,7 @@ public class hotelService {
         }
 
         int overCapacity = capacityUsed - maxCapacity;
-        double overCapacityFeePerPerson = contract.getRoom().getRoomGroup().getFee().getOverMaxCapacityFee(); 
+        double overCapacityFeePerPerson = contract.getRoom().getRoomGroup().getFee().overMaxCapacityFee(); 
 
         return overCapacity * overCapacityFeePerPerson;
     }
@@ -339,8 +343,8 @@ public class hotelService {
             paymentType,
             roomFee,
             overstayFee,
-            utilityFee,
             overMaxCapacityFee,
+            utilityFee,
             deposit,
             total
         );

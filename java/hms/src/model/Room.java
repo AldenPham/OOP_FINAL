@@ -22,6 +22,7 @@ public class Room {
         this.roomCapacity = roomCapacity;
         this.inGroup = inGroup;
         this.status = status;
+        this.roomPrice = roomPrice;
     }
 
     public String getRoomId(){
