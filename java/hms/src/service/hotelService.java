@@ -25,10 +25,20 @@ public class hotelService {
     }
 
     // ===== ADD CUSTOMER
-    public boolean addCustomer(Customer customer){
+    public boolean addCustomer(Customer customer) {
+        if (customer == null || customer.get_id() == null || customer.get_id().isBlank()) {
+            System.out.println("Customer and customer ID cannot be null or blank");
+            return false;
+        }
+
+        boolean duplicateId = customers.stream()
+                .anyMatch(existing -> existing.get_id().equals(customer.get_id()));
+        if (duplicateId) {
+            System.out.println("Customer ID already exists: " + customer.get_id());
+            return false;
+        }
 
         customers.add(customer);
-
         return true;
     }
 
@@ -68,7 +78,19 @@ public class hotelService {
     }
 
     // ===== ADD ROOM
-    public boolean addRoom(Room room){
+    public boolean addRoom(Room room) {
+        if (room == null || room.getRoomId() == null || room.getRoomId().isBlank()) {
+            System.out.println("Room and room ID cannot be null or blank");
+            return false;
+        }
+
+        boolean duplicateId = rooms.stream()
+                .anyMatch(existing -> existing.getRoomId().equals(room.getRoomId()));
+        if (duplicateId) {
+            System.out.println("Room ID already exists: " + room.getRoomId());
+            return false;
+        }
+
         rooms.add(room);
         return true;
     }
