@@ -1,0 +1,15 @@
+/home/alden/vscode/projectOOP/midterm/c#/hms/bin/Debug/net8.0/hms
+/home/alden/vscode/projectOOP/midterm/c#/hms/bin/Debug/net8.0/hms.deps.json
+/home/alden/vscode/projectOOP/midterm/c#/hms/bin/Debug/net8.0/hms.runtimeconfig.json
+/home/alden/vscode/projectOOP/midterm/c#/hms/bin/Debug/net8.0/hms.dll
+/home/alden/vscode/projectOOP/midterm/c#/hms/bin/Debug/net8.0/hms.pdb
+/home/alden/vscode/projectOOP/midterm/c#/hms/obj/Debug/net8.0/hms.GeneratedMSBuildEditorConfig.editorconfig
+/home/alden/vscode/projectOOP/midterm/c#/hms/obj/Debug/net8.0/hms.AssemblyInfoInputs.cache
+/home/alden/vscode/projectOOP/midterm/c#/hms/obj/Debug/net8.0/hms.AssemblyInfo.cs
+/home/alden/vscode/projectOOP/midterm/c#/hms/obj/Debug/net8.0/hms.csproj.CoreCompileInputs.cache
+/home/alden/vscode/projectOOP/midterm/c#/hms/obj/Debug/net8.0/hms.sourcelink.json
+/home/alden/vscode/projectOOP/midterm/c#/hms/obj/Debug/net8.0/hms.dll
+/home/alden/vscode/projectOOP/midterm/c#/hms/obj/Debug/net8.0/refint/hms.dll
+/home/alden/vscode/projectOOP/midterm/c#/hms/obj/Debug/net8.0/hms.pdb
+/home/alden/vscode/projectOOP/midterm/c#/hms/obj/Debug/net8.0/hms.genruntimeconfig.cache
+/home/alden/vscode/projectOOP/midterm/c#/hms/obj/Debug/net8.0/ref/hms.dll
