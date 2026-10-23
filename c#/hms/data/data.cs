@@ -22,7 +22,7 @@ public static class Database
             PRAGMA foreign_keys = ON;
 
             CREATE TABLE IF NOT EXISTS Customers (
-                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id TEXT PRIMARY KEY AUTOINCREMENT,
                 Name TEXT NOT NULL,
                 PhoneNumber TEXT,
                 Cccd TEXT,
@@ -30,17 +30,17 @@ public static class Database
             );
 
             CREATE TABLE IF NOT EXISTS RoomGroups (
-                GroupId INTEGER PRIMARY KEY AUTOINCREMENT,
+                GroupId TEXT PRIMARY KEY ,
                 GroupName TEXT NOT NULL,
                 Type TEXT,
                 Fee REAL DEFAULT 0
             );
 
             CREATE TABLE IF NOT EXISTS Rooms (
-                RoomId INTEGER PRIMARY KEY AUTOINCREMENT,
+                RoomId TEXT PRIMARY KEY ,
                 RoomLocation TEXT NOT NULL,
                 RoomCapacity INTEGER NOT NULL,
-                RoomGroupId INTEGER,
+                RoomGroupId TEXT,
                 Status TEXT NOT NULL,
                 RoomPrice REAL NOT NULL,
                 FOREIGN KEY (RoomGroupId)
@@ -48,9 +48,9 @@ public static class Database
             );
 
             CREATE TABLE IF NOT EXISTS RentalContracts (
-                ContractId INTEGER PRIMARY KEY AUTOINCREMENT,
-                CustomerId INTEGER NOT NULL,
-                RoomId INTEGER NOT NULL,
+                ContractId TEXT PRIMARY KEY ,
+                CustomerId TEXT NOT NULL,
+                RoomId TEXT NOT NULL,
                 StartTime TEXT NOT NULL,
                 EndTime TEXT,
                 CheckInTime TEXT,
@@ -62,22 +62,22 @@ public static class Database
             );
 
             CREATE TABLE IF NOT EXISTS Utilities (
-                UtilityId INTEGER PRIMARY KEY AUTOINCREMENT,
+                UtilityId TEXT PRIMARY KEY ,
                 UtilityName TEXT NOT NULL,
                 UtilityPrice REAL NOT NULL
             );
 
             CREATE TABLE IF NOT EXISTS RoomGroupUtilities (
-                RoomGroupId INTEGER NOT NULL,
-                UtilityId INTEGER NOT NULL,
+                RoomGroupId TEXT NOT NULL,
+                UtilityId TEXT NOT NULL,
                 PRIMARY KEY (RoomGroupId, UtilityId),
                 FOREIGN KEY (RoomGroupId) REFERENCES RoomGroups(GroupId),
                 FOREIGN KEY (UtilityId) REFERENCES Utilities(UtilityId)
             );
 
             CREATE TABLE IF NOT EXISTS ContractUtilities (
-                ContractId INTEGER NOT NULL,
-                UtilityId INTEGER NOT NULL,
+                ContractId TEXT NOT NULL,
+                UtilityId TEXT NOT NULL,
                 Quantity REAL NOT NULL DEFAULT 1,
                 PRIMARY KEY (ContractId, UtilityId),
                 FOREIGN KEY (ContractId) REFERENCES RentalContracts(ContractId),
@@ -85,9 +85,9 @@ public static class Database
             );
 
             CREATE TABLE IF NOT EXISTS Invoices (
-                InvoiceId INTEGER PRIMARY KEY AUTOINCREMENT,
-                PayerId INTEGER NOT NULL,
-                ContractId INTEGER NOT NULL,
+                InvoiceId TEXT PRIMARY KEY AUTOINCREMENT,
+                PayerId TEXT NOT NULL,
+                ContractId TEXT NOT NULL,
                 PaymentType TEXT,
                 RoomFee REAL NOT NULL DEFAULT 0,
                 OverstayFee REAL NOT NULL DEFAULT 0,
