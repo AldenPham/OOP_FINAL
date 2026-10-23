@@ -18,10 +18,6 @@ public sealed class HotelService
     private readonly List<RentalContract> _contracts = [];
     private readonly List<Invoice> _invoices = [];
 
-    private int _customerCounter = 1;
-    private int _roomGroupCounter = 1;
-    private int _utilityCounter = 1;
-    private int _roomCounter = 1;
     private int _invoiceCounter;
     private int _contractCounter;
 
@@ -36,7 +32,7 @@ public sealed class HotelService
 
     public Customer CreateCustomer(string name, string phoneNumber, string cccd, CustomerType type)
     {
-        var id = GenerateId("KH", ref _customerCounter, _customers.Select(c => c.Id));
+        var id = GenerateId("KH", _customers.Select(c => c.Id));
         var customer = new Customer(id, name, phoneNumber, cccd, type);
         if (!AddCustomer(customer))
             throw new InvalidOperationException($"Could not register generated customer ID '{id}'.");
@@ -46,7 +42,7 @@ public sealed class HotelService
     public RoomGroup CreateRoomGroup(string groupName, RoomType type, FeePolicy fee)
     {
         ArgumentNullException.ThrowIfNull(fee);
-        var id = GenerateId("RG", ref _roomGroupCounter, _roomGroups.Select(g => g.GroupId));
+        var id = GenerateId("RG", _roomGroups.Select(g => g.GroupId));
         var group = new RoomGroup(groupName, id, type, fee);
         if (!AddRoomGroup(group))
             throw new InvalidOperationException($"Could not register generated room-group ID '{id}'.");
@@ -55,7 +51,7 @@ public sealed class HotelService
 
     public Utility CreateUtility(string utilityName, double utilityPrice)
     {
-        var id = GenerateId("UT", ref _utilityCounter, _utilities.Select(u => u.UtilityId));
+        var id = GenerateId("UT", _utilities.Select(u => u.UtilityId));
         var utility = new Utility(utilityName, id, utilityPrice);
         if (!AddUtility(utility))
             throw new InvalidOperationException($"Could not register generated utility ID '{id}'.");
@@ -73,7 +69,7 @@ public sealed class HotelService
         if (!_roomGroups.Any(g => object.ReferenceEquals(g, roomGroup)))
             throw new ArgumentException("Room group must first be registered with this hotel service.", nameof(roomGroup));
 
-        var id = GenerateId("R", ref _roomCounter, _rooms.Select(r => r.RoomId));
+        var id = GenerateId("R", _rooms.Select(r => r.RoomId));
         var room = new Room(roomLocation, id, roomCapacity, roomGroup, status, roomPrice);
         if (!AddRoom(room))
             throw new InvalidOperationException($"Could not register generated room ID '{id}'.");
@@ -154,18 +150,18 @@ public sealed class HotelService
         return true;
     }
 
-    private static string GenerateId(string prefix, ref int counter, IEnumerable<string> existingIds)
+    private static string GenerateId(string prefix, IEnumerable<string> existingIds)
     {
-        var existing = existingIds.ToHashSet(StringComparer.Ordinal);
-        while (true)
-        {
-            var candidate = $"{prefix}{counter:D3}";
-            counter++;
-            if (existing.Add(candidate))
-                return candidate;
-        }
-    }
+        var maxNumber = existingIds
+            .Where(id => id.StartsWith(prefix, StringComparison.Ordinal))
+            .Select(id => id.Substring(prefix.Length))
+            .Where(s => int.TryParse(s, out _))
+            .Select(int.Parse)
+            .DefaultIfEmpty(0)
+            .Max();
 
+        return $"{prefix}{maxNumber + 1:D3}";
+    }
     // ---------- Find operations ----------
 
     public Customer? FindCustomer(string customerId) =>
