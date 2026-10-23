@@ -30,6 +30,10 @@ public final class HotelService {
             throw new IllegalStateException("Could not load the hotel database.", ex);
         }
     }
+
+    public HotelRepository getRepository() {
+        return repository;
+    }
     public java.nio.file.Path getDatabasePath() { return repository.getDatabasePath(); }
     public List<Customer> getCustomers() { return List.copyOf(customers); }
     public List<RoomGroup> getRoomGroups() { return List.copyOf(roomGroups); }
@@ -140,4 +144,8 @@ public final class HotelService {
         try { action.run(); }
         catch (SQLException ex) { throw new IllegalStateException("Database operation failed: " + ex.getMessage(), ex); }
     }
+
+    
+
+
 }

@@ -4,6 +4,7 @@ import hotel.model.*;
 import hotel.model.enums.*;
 import hotel.model.policy.FeePolicy;
 import hotel.service.HotelService;
+import hotel.dao.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,8 +48,9 @@ public final class App {
                     case 10 -> listContracts(); case 11 -> findOngoingContracts(); case 12 -> checkIn();
                     case 13 -> useUtility(); case 14 -> checkOut(); case 15 -> previewBill();
                     case 16 -> createInvoice(); case 17 -> listInvoices(); case 18 -> runReports();
+                    case 19 -> runDao();
                     case 0 -> { running = false; System.out.println("Goodbye!"); }
-                    default -> System.out.println("Invalid menu option. Choose 0-18.");
+                    default -> System.out.println("Invalid menu option. Choose 0-19.");
                 }
             } catch (RuntimeException ex) {
                 System.out.println("Operation failed: " + ex.getMessage());
@@ -64,7 +66,7 @@ public final class App {
         System.out.println(" ROOM SETUP\n  3. Add room group / category\n  4. Add utility and assign to room groups\n  5. List room groups and utilities\n  6. Add room\n  7. List all rooms\n  8. List available rooms only");
         System.out.println(" BOOKING OPERATIONS\n  9. Book a room\n 10. List contracts\n 11. Find customer's ongoing contracts\n 12. Check in\n 13. Use utility\n 14. Check out");
         System.out.println(" BILLING\n 15. Preview bill\n 16. Create invoice\n 17. List invoices");
-        System.out.println(" REPORTS\n 18. Run all 10 reports (Stream/lambda)\n  0. Exit\n=========================================");
+        System.out.println(" REPORTS\n 18. Run all 10 reports (Stream/lambda)\n 19.DAO\n  0. Exit\n=========================================");
     }
 
     private void addCustomer() {
@@ -183,7 +185,9 @@ public final class App {
         System.out.println(invoice == null ? "Invoice was not created." : "Invoice saved: " + invoice);
     }
     private void listInvoices() {
-        System.out.println("--- Invoices ---"); if (hotel.getInvoices().isEmpty()) System.out.println("No invoices yet."); hotel.getInvoices().forEach(System.out::println);
+        System.out.println("--- Invoices ---"); 
+        if (hotel.getInvoices().isEmpty()) System.out.println("No invoices yet."); 
+        hotel.getInvoices().forEach(System.out::println);
     }
 
     private void runReports() {
@@ -231,6 +235,24 @@ public final class App {
         else stays.entrySet().stream().filter(e -> e.getValue() == most).forEach(e -> { Customer c = hotel.findCustomer(e.getKey()); System.out.printf("  %s (%s) | completed stays: %d | return visits: %d%n", c == null ? e.getKey() : c.getName(), e.getKey(), e.getValue(), e.getValue() - 1); });
     }
 
+    private void runDao() {
+        System.out.println("=== DAO REPORTS ===");
+
+        var repository = hotel.getRepository();
+
+        new hotel.dao.AvailableRoomDAO(repository).execute();
+        new hotel.dao.CustomerReturnFrequencyDAO(repository).execute();
+        new hotel.dao.CustomerTotalSpendDAO(repository).execute();
+        new hotel.dao.LeastBookedRoomTypeDAO(repository).execute();
+        new hotel.dao.MostRentedRoomTypeDAO(repository).execute();
+        new hotel.dao.PaymentMethodRevenueDAO(repository).execute();
+        new hotel.dao.QuarterlyRevenueDAO(repository).execute();
+        new hotel.dao.RoomTypeRevenueDAO(repository).execute();
+        new hotel.dao.TopLoyalCustomerDAO(repository).execute();
+
+        String roomGroupId = readLine("Enter room group ID: ");
+        new hotel.dao.RoomGroupUtilityDAO(repository).execute(roomGroupId);
+    }
     private static String readLine(String prompt) { System.out.print(prompt); return INPUT.nextLine().trim(); }
     private static String readNonBlank(String prompt) { while (true) { String value = readLine(prompt); if (!value.isBlank()) return value; System.out.println("Value cannot be blank."); } }
     private static int readInt(String prompt) { while (true) { try { return Integer.parseInt(readLine(prompt)); } catch (NumberFormatException ex) { System.out.println("Please enter a whole number."); } } }
