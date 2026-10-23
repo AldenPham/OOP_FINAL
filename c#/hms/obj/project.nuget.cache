@@ -1,8 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "qy8ny1yrw+85Nzvw6XPNxoMojoBlh0uZ7ala7nBAbxZm23jKI4Tgx1ZyakN07a19QDht7HwiozZEx0tUm3xWEQ==",
+  "dgSpecHash": "Kh3l0RIoK8vt7Xf80/PnXmS4RtZwu7FsVl/0Tj4UVwwwe38MQzjb8jbQ3PTppkqwKg+4R8xweZ5x5hNoCaIcqQ==",
   "success": true,
   "projectFilePath": "/home/alden/vscode/projectOOP/midterm/c#/hms/hms.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/home/alden/.nuget/packages/microsoft.data.sqlite/10.0.13/microsoft.data.sqlite.10.0.13.nupkg.sha512",
+    "/home/alden/.nuget/packages/microsoft.data.sqlite.core/10.0.13/microsoft.data.sqlite.core.10.0.13.nupkg.sha512",
+    "/home/alden/.nuget/packages/sqlitepclraw.bundle_e_sqlite3/2.1.13/sqlitepclraw.bundle_e_sqlite3.2.1.13.nupkg.sha512",
+    "/home/alden/.nuget/packages/sqlitepclraw.core/2.1.13/sqlitepclraw.core.2.1.13.nupkg.sha512",
+    "/home/alden/.nuget/packages/sqlitepclraw.lib.e_sqlite3/2.1.13/sqlitepclraw.lib.e_sqlite3.2.1.13.nupkg.sha512",
+    "/home/alden/.nuget/packages/sqlitepclraw.provider.e_sqlite3/2.1.13/sqlitepclraw.provider.e_sqlite3.2.1.13.nupkg.sha512",
+    "/home/alden/.nuget/packages/system.memory/4.5.3/system.memory.4.5.3.nupkg.sha512"
+  ],
   "logs": []
 }
