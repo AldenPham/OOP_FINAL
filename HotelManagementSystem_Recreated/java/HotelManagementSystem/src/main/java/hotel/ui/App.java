@@ -233,6 +233,192 @@ public final class App {
         System.out.println("\n10. Customer with the most return visits"); long most = stays.values().stream().mapToLong(Long::longValue).max().orElse(0);
         if (most <= 1) System.out.println("  No returning customer found yet (a return requires at least 2 completed stays).");
         else stays.entrySet().stream().filter(e -> e.getValue() == most).forEach(e -> { Customer c = hotel.findCustomer(e.getKey()); System.out.printf("  %s (%s) | completed stays: %d | return visits: %d%n", c == null ? e.getKey() : c.getName(), e.getKey(), e.getValue(), e.getValue() - 1); });
+
+        // 11. Customer with the most contracts
+        System.out.println("\n11. Customer with the most contracts");
+
+        Map<String, List<RentalContract>> contractsByCustomer = contracts.stream()
+            .collect(Collectors.groupingBy(c -> c.getCustomer().getId()));
+
+        long maxContracts = contractsByCustomer.values().stream()
+            .mapToLong(List::size)
+            .max()
+            .orElse(0);
+
+        contractsByCustomer.forEach((id, list) -> {
+            if (list.size() == maxContracts && maxContracts > 0) {
+                Customer c = list.get(0).getCustomer();
+                System.out.printf(
+                    "  %s (%s): %d contract(s)%n",
+                    c.getName(), id, list.size()
+                );
+            }
+        });
+
+
+        // 12. Rooms with above-average capacity
+        System.out.println("\n12. Rooms with above-average capacity");
+
+        double avgCapacity = hotel.getRooms().stream()
+            .mapToInt(Room::getRoomCapacity)
+            .average()
+            .orElse(0);
+
+        hotel.getRooms().stream()
+            .filter(r -> r.getRoomCapacity() > avgCapacity)
+            .sorted(Comparator.comparingInt(Room::getRoomCapacity).reversed())
+            .forEach(r -> System.out.printf(
+                "  Room %s: capacity %d%n",
+                r.getRoomId(), r.getRoomCapacity()
+            ));
+
+
+        // 13. Contracts by customer type
+        System.out.println("\n13. Contracts by customer type");
+
+        contracts.stream()
+            .collect(Collectors.groupingBy(
+                c -> c.getCustomer().getType(),
+                Collectors.counting()
+            ))
+            .entrySet()
+            .stream()
+            .sorted(Map.Entry.<CustomerType, Long>comparingByValue().reversed())
+            .forEach(e -> System.out.printf(
+                "  %s: %d contract(s)%n",
+                e.getKey(), e.getValue()
+            ));
+
+
+        // 14. Utilities never used
+        System.out.println("\n14. Utilities never used");
+
+        List<Utility> unusedUtilities = hotel.getUtilities().stream()
+            .filter(u -> contracts.stream()
+                .noneMatch(c -> c.getUtilitiesUsed().stream()
+                    .anyMatch(used ->
+                        used.getUtilityId().equals(u.getUtilityId())
+                    )
+                )
+            )
+            .toList();
+
+        if (unusedUtilities.isEmpty()) {
+            System.out.println("  All utilities have been used.");
+        }
+
+        unusedUtilities.forEach(u -> System.out.printf(
+            "  %s | %s%n", u.getUtilityId(), u.getUtilityName()
+        ));
+
+
+        // 15. Average invoice by payer customer type
+        System.out.println("\n15. Average invoice by payer customer type");
+
+        invoices.stream()
+            .collect(Collectors.groupingBy(
+                i -> i.getPayer().getType(),
+                Collectors.averagingDouble(Invoice::getTotal)
+            ))
+            .entrySet()
+            .stream()
+            .sorted(Map.Entry.<CustomerType, Double>comparingByValue().reversed())
+            .forEach(e -> System.out.printf(
+                Locale.ROOT, "  %s: average %.2f%n",
+                e.getKey(), e.getValue()
+            ));
+
+
+        // 16. Longest booking duration
+        System.out.println("\n16. Longest booking duration");
+
+        Map<RentalContract, Double> bookingDurations = contracts.stream()
+            .collect(Collectors.toMap(
+                c -> c,
+                c -> (double) java.time.Duration.between(
+                    c.getStartTime(), c.getEndTime()
+                ).toSeconds() / 86400.0
+            ));
+
+        double longest = bookingDurations.values().stream()
+            .mapToDouble(Double::doubleValue)
+            .max()
+            .orElse(0);
+
+        bookingDurations.forEach((c, days) -> {
+            if (Double.compare(days, longest) == 0) {
+                System.out.printf(
+                    Locale.ROOT, "  %s | %s | %.2f day(s)%n",
+                    c.getContractId(), c.getCustomer().getName(), days
+                );
+            }
+        });
+
+
+        // 17. Room booking ranking
+        System.out.println("\n17. Room booking ranking");
+
+        hotel.getRooms().stream()
+            .map(r -> new AbstractMap.SimpleEntry<>(
+                r,
+                contracts.stream()
+                    .filter(c -> c.getRoom().getRoomId().equals(r.getRoomId()))
+                    .count()
+            ))
+            .sorted(
+                Map.Entry.<Room, Long>comparingByValue()
+                    .reversed()
+                    .thenComparing(e -> e.getKey().getRoomId())
+            )
+            .forEach(e -> System.out.printf(
+                "  Room %s: %d booking(s)%n",
+                e.getKey().getRoomId(), e.getValue()
+            ));
+
+
+        // 18. Customers with ongoing contracts
+        System.out.println("\n18. Customers with ongoing contracts");
+
+        contracts.stream()
+            .filter(c -> c.getStatus() == ContractStatus.ON_GOING)
+            .map(RentalContract::getCustomer)
+            .collect(Collectors.toMap(
+                Customer::getId,
+                c -> c,
+                (first, second) -> first
+            ))
+            .values()
+            .forEach(c -> System.out.printf(
+                "  %s | %s%n", c.getId(), c.getName()
+            ));
+
+
+        // 19. Utility usage by contract
+        System.out.println("\n19. Utility usage by contract");
+
+        contracts.stream()
+            .sorted(Comparator.comparingInt(
+                (RentalContract c) -> c.getUtilitiesUsed().size()
+            ).reversed())
+            .forEach(c -> System.out.printf(
+                "  %s | %s: %d utility use(s)%n",
+                c.getContractId(),
+                c.getCustomer().getName(),
+                c.getUtilitiesUsed().size()
+            ));
+
+
+        // 20. Room types with all rooms available
+        System.out.println("\n20. Room types with all rooms available");
+
+        types.stream()
+            .filter(t -> hotel.getRooms().stream()
+                .anyMatch(r -> r.getRoomType() == t))
+            .filter(t -> hotel.getRooms().stream()
+                .filter(r -> r.getRoomType() == t)
+                .allMatch(r -> r.getRoomStatus() == RoomStatus.AVAILABLE))
+            .forEach(System.out::println);
+    
     }
 
     private void runDao() {
