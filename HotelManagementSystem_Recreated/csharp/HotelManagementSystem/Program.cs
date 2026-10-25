@@ -507,15 +507,17 @@ internal static class Program
 
         // 18. Customers with unfinished contracts
         Console.WriteLine("\n18. Customers with unfinished contracts");
-
+        
         var ongoingCustomers = _hotel.Contracts
             .Where(c => c.Status != ContractStatus.completed)
-            .Select(c => c.Customer)
-            .DistinctBy(c => c.Id)
+            .GroupBy(c => c.Customer.Id)
+            .Select(g => g.First().Customer)
             .ToList();
-
+        
         foreach (var c in ongoingCustomers)
+        {
             Console.WriteLine($"  {c.Id} | {c.Name}");
+        }
 
 
         // 19. Utility usage by contract
