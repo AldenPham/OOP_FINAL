@@ -537,15 +537,19 @@ internal static class Program
                 $"{x.UsageCount} utility use(s)");
 
 
-        // 20. Room types with all rooms available
+       // 20. Room types with all rooms available
         Console.WriteLine("\n20. Room types with all rooms available");
-
+        
         var allAvailableTypes = types
             .Where(t => _hotel.Rooms.Any(r => r.RoomType == t))
             .Where(t => _hotel.Rooms
                 .Where(r => r.RoomType == t)
                 .All(r => r.Status == RoomStatus.AVAILABLE))
             .ToList();
+        
+        foreach (var type in allAvailableTypes)
+        {
+            Console.WriteLine($"  {type}");
     }
 
     private static string ReadLine(string prompt) { Console.Write(prompt); return Console.ReadLine()?.Trim() ?? string.Empty; }
