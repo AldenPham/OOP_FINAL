@@ -357,6 +357,195 @@ internal static class Program
         {
             var c = _hotel.FindCustomer(x.Key); Console.WriteLine($"  {c?.Name ?? x.Key} ({x.Key}) | completed stays: {x.Value} | return visits: {x.Value - 1}");
         }
+         // 11. Customer with the most contracts
+        Console.WriteLine("\n11. Customer with the most contracts");
+
+        var topContractCustomers = _hotel.Contracts
+            .GroupBy(c => new { c.Customer.Id, c.Customer.Name })
+            .Select(g => new
+            {
+                g.Key.Id,
+                g.Key.Name,
+                ContractCount = g.Count()
+            })
+            .OrderByDescending(x => x.ContractCount)
+            .ToList();
+
+        if (topContractCustomers.Count == 0)
+            Console.WriteLine("  No contracts yet.");
+        else
+        {
+            int maxCount = topContractCustomers[0].ContractCount;
+
+            foreach (var c in topContractCustomers
+                .Where(c => c.ContractCount == maxCount))
+                {
+                    Console.WriteLine(
+                        $"  {c.Name} ({c.Id}): {c.ContractCount} contract(s)");
+                }
+        }
+
+
+        // 12. Rooms with above-average capacity
+        Console.WriteLine("\n12. Rooms with above-average capacity");
+
+        double avgCapacity = _hotel.Rooms
+            .Select(r => r.MaxCapacity)
+            .DefaultIfEmpty(0)
+            .Average();
+
+        var largeRooms = _hotel.Rooms
+            .Where(r => r.MaxCapacity > avgCapacity)
+            .OrderByDescending(r => r.MaxCapacity)
+            .ToList();
+
+        foreach (var r in largeRooms)
+            Console.WriteLine(
+                $"  Room {r.RoomId}: capacity {r.MaxCapacity}");
+
+
+        // 13. Contracts by customer type
+        Console.WriteLine("\n13. Contracts by customer type");
+
+        var contractsByCustomerType = _hotel.Contracts
+            .GroupBy(c => c.Customer.Type)
+            .Select(g => new
+            {
+                CustomerType = g.Key,
+                Count = g.Count()
+            })
+            .OrderByDescending(x => x.Count);
+
+        foreach (var x in contractsByCustomerType)
+            Console.WriteLine(
+                $"  {x.CustomerType}: {x.Count} contract(s)");
+
+
+        // 14. Utilities never used
+        Console.WriteLine("\n14. Utilities never used");
+
+        var unusedUtilities = _hotel.Utilities
+            .Where(u => !_hotel.Contracts
+                .Any(c => c.UtilitiesUsed
+                    .Any(used => used.UtilityId == u.UtilityId)))
+            .ToList();
+
+        if (unusedUtilities.Count == 0)
+            Console.WriteLine("  All utilities have been used.");
+
+        foreach (var u in unusedUtilities)
+            Console.WriteLine($"  {u.UtilityId} | {u.UtilityName}");
+
+
+        // 15. Average invoice by payer type
+        Console.WriteLine("\n15. Average invoice by customer type");
+
+        var averageInvoiceByCustomerType = _hotel.Invoices
+            .GroupBy(i => i.Customer.Type)
+            .Select(g => new
+            {
+                CustomerType = g.Key,
+                AverageInvoice = g.Average(i => i.Total),
+                InvoiceCount = g.Count()
+            })
+            .OrderByDescending(x => x.AverageInvoice);
+
+        foreach (var x in averageInvoiceByCustomerType)
+            Console.WriteLine(
+                $"  {x.CustomerType}: average {x.AverageInvoice:F2}, " +
+                $"{x.InvoiceCount} invoice(s)");
+
+
+        // 16. Longest booking duration
+        Console.WriteLine("\n16. Longest booking duration");
+
+        var longestBookings = _hotel.Contracts
+            .Select(c => new
+            {
+                Contract = c,
+                Duration = (c.EndTime - c.StartTime).TotalDays
+            })
+            .OrderByDescending(x => x.Duration)
+            .ToList();
+
+        if (longestBookings.Count == 0)
+            Console.WriteLine("  No contracts yet.");
+        else
+        {
+            double maxDays = longestBookings[0].Duration;
+
+            foreach (var x in longestBookings
+                .Where(x => x.Duration == maxDays))
+            {
+                Console.WriteLine(
+                    $"  {x.Contract.ContractId} | " +
+                    $"{x.Contract.Customer.Name} | " +
+                    $"{x.Duration:F2} day(s)");
+            }
+        }
+
+
+        // 17. Room booking ranking
+        Console.WriteLine("\n17. Room booking ranking");
+
+        var roomRanking = _hotel.Rooms
+            .Select(r => new
+            {
+                Room = r,
+                BookingCount = _hotel.Contracts.Count(
+                    c => c.Room.RoomId == r.RoomId)
+            })
+            .OrderByDescending(x => x.BookingCount)
+            .ThenBy(x => x.Room.RoomId)
+            .ToList();
+
+        foreach (var x in roomRanking)
+            Console.WriteLine(
+                $"  Room {x.Room.RoomId}: " +
+                $"{x.BookingCount} booking(s)");
+
+
+        // 18. Customers with unfinished contracts
+        Console.WriteLine("\n18. Customers with unfinished contracts");
+
+        var ongoingCustomers = _hotel.Contracts
+            .Where(c => c.Status != ContractStatus.completed)
+            .Select(c => c.Customer)
+            .DistinctBy(c => c.Id)
+            .ToList();
+
+        foreach (var c in ongoingCustomers)
+            Console.WriteLine($"  {c.Id} | {c.Name}");
+
+
+        // 19. Utility usage by contract
+        Console.WriteLine("\n19. Utility usage by contract");
+
+        var utilityUsage = _hotel.Contracts
+            .Select(c => new
+            {
+                c.ContractId,
+                CustomerName = c.Customer.Name,
+                UsageCount = c.UtilitiesUsed.Count
+            })
+            .OrderByDescending(x => x.UsageCount)
+            .ToList();
+
+        foreach (var x in utilityUsage)
+            Console.WriteLine(
+                $"  {x.ContractId} | {x.CustomerName}: " +
+                $"{x.UsageCount} utility use(s)");
+
+
+        // 20. Room types with all rooms available
+        Console.WriteLine("\n20. Room types with all rooms available");
+
+        var allAvailableTypes = types
+            .Where(t => _hotel.Rooms.Any(r => r.RoomType == t))
+            .Where(t => _hotel.Rooms
+                .Where(r => r.RoomType == t)
+                .All(r => r.Status == RoomStatus.AVAILABLE))
+            .ToList();
     }
 
     private static string ReadLine(string prompt) { Console.Write(prompt); return Console.ReadLine()?.Trim() ?? string.Empty; }
