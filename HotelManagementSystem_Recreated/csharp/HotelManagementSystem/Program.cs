@@ -390,7 +390,7 @@ internal static class Program
         Console.WriteLine("\n12. Rooms with above-average capacity");
 
         double avgCapacity = _hotel.Rooms
-            .Select(r => r.MaxCapacity)
+            .Select(r => r.RoomCapacity)
             .DefaultIfEmpty(0)
             .Average();
 
@@ -441,7 +441,7 @@ internal static class Program
         Console.WriteLine("\n15. Average invoice by customer type");
 
         var averageInvoiceByCustomerType = _hotel.Invoices
-            .GroupBy(i => i.Customer.Type)
+            .GroupBy(i => i.Payer.Type)
             .Select(g => new
             {
                 CustomerType = g.Key,
